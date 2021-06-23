@@ -30,14 +30,33 @@ $product_tabs = apply_filters( 'woocommerce_product_tabs', array() );
 
 if ( ! empty( $product_tabs ) ) : ?>
 
-	
 	<?php $i = 1 ?>
 	
 	<style>
+        .title-area{
+            position: relative;
+            border-radius: 5px;
+            border: 1px solid #f53ccf;
+        }
+        
+        .title-area:hover , .title-area:focus { 
+          box-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 12px #ff32d5, 0 0 12px #ff32d5, 0 0 12px #ff32d5, 0 0 2px #ff32d5, 0 0 21px #ff32d5;
+          }
+
+        
+        #accordion{
+            display: block;
+            float: none;
+            width: 75%;
+            margin: 0 auto;
+            float:left;
+        }
 		.full-wide {
 		  width: 100%;
-		  display: flex;
+		  display: block;
 		  justify-content: space-between;
+          float: left;
+          margin: 10px 0px;
 		}
 		.full-wide .bi-chevron-up {
 		  display: none;
@@ -51,9 +70,44 @@ if ( ! empty( $product_tabs ) ) : ?>
 		.full-wide.wide-open .bi-chevron-down {
 		  display: none;
 		}
+        .title-area{
+            float: left;
+            width: 100%;
+            display: inline-block;
+            line-height: 25px;
+            padding: 20px 15px;
+/*            border: 1px solid #f62dcb;*/
+            padding-bottom: 15px;
+        }
+        .mb-2{
+            width: 95%;
+            float: left; 
+            margin: 0px;
+            font-size: 30px;
+        }
+        .collapse h2{
+            display: none;
+        }
+         .row_inner_wrapper{
+            padding: 10px 0px;
+        }
+        .title-area svg{
+            float: left;
+            display: block;
+            width: 5%;
+            text-align: right;
+            font-size: 25px;
+        }
 		.full-wide.wide-open .bi-chevron-up {
 		  display: inline-block;
 		}
+        .full-wide .collapse{
+            display: none;
+            float: left;
+        }
+        .wide-open .collapse{
+            display: block !important;
+        }
 	</style>
 
 	<div id="accordion">
@@ -69,40 +123,46 @@ if ( ! empty( $product_tabs ) ) : ?>
 				$show = '';
 			} ?>
 	        <div class="full-wide <?php echo $open; ?>" data-toggle="collapse" data-target="#collapse<?php echo $i ?>" aria-expanded="<?php echo $val; ?>"aria-controls="collapse<?php echo $i ?>">
-	              
-		              <h3 class="mb-2">
-						<?php echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $product_tab['title'], $key ) ); ?>
-		              </h3>
-			
-	              <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-	              <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 01.708 0L8 10.293l5.646-5.647a.5.5 0 01.708.708l-6 6a.5.5 0 01-.708 0l-6-6a.5.5 0 010-.708z" clip-rule="evenodd"/>
-	              </svg>
+	              <div class="title-area">
+                     <h3 class="mb-2">
+                            <?php echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $product_tab['title'], $key ) ); ?>
+                          </h3>
 
-	              <svg class="bi bi-chevron-up" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-	                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 01.708 0l6 6a.5.5 0 01-.708.708L8 5.707l-5.646 5.647a.5.5 0 01-.708-.708l6-6z" clip-rule="evenodd"/>
-	              </svg>
+                      <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 01.708 0L8 10.293l5.646-5.647a.5.5 0 01.708.708l-6 6a.5.5 0 01-.708 0l-6-6a.5.5 0 010-.708z" clip-rule="evenodd"/>
+                      </svg>
+
+                      <svg class="bi bi-chevron-up" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 01.708 0l6 6a.5.5 0 01-.708.708L8 5.707l-5.646 5.647a.5.5 0 01-.708-.708l6-6z" clip-rule="evenodd"/>
+                      </svg>
+                  </div>
+		             
+                
+                <div id="collapse<?php echo $i ?>" class="collapse <?php echo $show; ?>" aria-labelledby="heading1">
+                  <p>
+                    <?php
+                        if ( isset( $product_tab['callback'] ) ) {
+                            call_user_func( $product_tab['callback'], $key, $product_tab );
+                        }
+                    ?>
+                  </p>
+               </div>
+                
 	        </div>
 
-	        <div id="collapse<?php echo $i ?>" class="collapse <?php echo $show; ?>" aria-labelledby="heading1">
-	          <p>
-	            <?php
-					if ( isset( $product_tab['callback'] ) ) {
-						call_user_func( $product_tab['callback'], $key, $product_tab );
-					}
-				?>
-	          </p>
-	        </div>
-	        <hr>
+	        
+	        <hr> 
 		 <?php $i++ ?>
         <?php endforeach; ?>
 	<?php endwhile; ?>
 	</div>
 	<?php do_action( 'woocommerce_product_after_tabs' ); ?>
 
+
 	<script>
 		jQuery(document).ready(function() {
-			jQuery('.full-wide').click(function() {
-	          jQuery(this).toggleClass('wide-open');
+			jQuery('.full-wide .title-area').on('click', function() {
+	          jQuery(this).parent().toggleClass('wide-open');
 	        });
 	    });
 	</script>
